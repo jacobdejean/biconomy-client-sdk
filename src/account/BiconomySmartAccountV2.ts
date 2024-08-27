@@ -1674,6 +1674,7 @@ export class BiconomySmartAccountV2 extends BaseSmartContractAccount {
   async buildUserOp(
     transactions: Transaction[],
     buildUseropDto?: BuildUserOpOptions,
+    init?: { initCode?: `0x${string}` },
   ): Promise<Partial<UserOperationStruct>> {
     const to = transactions.map((element: Transaction) => element.to as Hex);
     const data = transactions.map(
@@ -1710,9 +1711,11 @@ export class BiconomySmartAccountV2 extends BaseSmartContractAccount {
     let userOp: Partial<UserOperationStruct> = {
       sender: (await this.getAccountAddress()) as Hex,
       nonce: toHex(nonceFromFetch),
-      initCode,
+      initCode: init?.initCode ?? initCode,
       callData,
     };
+
+    console.log("userOp", userOp);
 
     // for this Smart Account current validation module dummy signature will be used to estimate gas
     userOp.signature = signature;
